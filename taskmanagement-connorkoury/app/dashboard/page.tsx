@@ -1,14 +1,21 @@
-import React from 'react'
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../lib/auth';
-import { useRouter } from 'next/navigation';
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import jwt from "jsonwebtoken";
+import DashboardClient from "./DashboardClient";
 
-const page = async () => {
-  const session = await getServerSession(authOptions)
-  
-  return (
-    <h1>Hello {session?.user.username}</h1>
-  )
+export default async function DashboardPage() {
+  const cookie = await cookies()
+  const token = cookie.get("token")?.value;
+  if (!token) {
+    redirect("/login");
+  }
+  let decoded: any;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET!);
+  } catch (error) {
+    redirect("/login");
+  }
+
+  // Pass session data to the client component
+  return <DashboardClient session={decoded} />;
 }
-
-export default page;

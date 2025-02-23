@@ -1,31 +1,31 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     const formData = new FormData(event.currentTarget);
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
 
-    const result = await signIn("credentials", {
-      username,
-      password,
-      redirect: false,
-      callbackUrl: "/dashboard",
-    });
-
-    if (result?.error) {
-      setError(result.error);
-    } else {
-      router.push(result?.url || "/dashboard");
+    try {
+      const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+      } else {
+        // No token is stored client-side—the cookie is set by the API.
+        window.location.href = "/dashboard";
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
     }
   }
 
