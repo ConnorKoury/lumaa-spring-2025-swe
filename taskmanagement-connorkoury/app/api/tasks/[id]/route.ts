@@ -26,6 +26,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
+// Delete the task with the given id
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
