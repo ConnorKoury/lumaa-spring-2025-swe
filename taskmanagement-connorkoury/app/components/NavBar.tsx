@@ -17,7 +17,7 @@ export default function NavBar() {
   useEffect(() => {
     async function fetchSession() {
       try {
-        const res = await fetch("/auth/session");
+        const res = await fetch("api/auth/session");
         const data = await res.json();
         setSession(data.session);
       } catch (error) {
@@ -28,7 +28,7 @@ export default function NavBar() {
   }, []);
 
   async function handleSignOut() {
-    await fetch("/auth/signout", { method: "POST" });
+    await fetch("api/auth/signout", { method: "POST" });
     router.refresh();
     router.push("/login");
   }

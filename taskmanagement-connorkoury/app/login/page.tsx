@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function LoginPage() {
@@ -12,7 +13,7 @@ export default function LoginPage() {
     const password = formData.get("password") as string;
 
     try {
-      const response = await fetch("/auth/login", {
+      const response = await fetch("api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -69,6 +70,7 @@ export default function LoginPage() {
         >
           Login
         </button>
+        <Link href="/signup">Don't have an account? Sign Up</Link>
       </form>
     </div>
   );
